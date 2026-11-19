@@ -118,21 +118,10 @@ function aside(){
  return '<aside class="sidebar"><div class="panel"><details id="draftPanel" '+(draftOpen?'open':'')+'><summary>Moje ustalenia</summary><p class="muted">'+esc(active.title)+'</p><div id="draftBody" class="draft-body">'+draftMarkup()+'</div></details><button class="secondary glossary-open" data-action="glossary">Słowniczek mojego programu</button><button class="quiet" data-action="preview">Podgląd raportu</button><button class="quiet" data-action="json">Kopia zapisu JSON</button><details class="restart"><summary>Nowa próba</summary><button class="quiet danger" data-action="reset">Zacznij tę ścieżkę od nowa</button></details></div></aside>';
 }
 function quote(label,content){return '<div class="feedback-quote"><strong>'+esc(label)+'</strong><p>'+esc(content||'Jeszcze nie zapisano')+'</p></div>';}
-// Short, conditional examples replace generic feedback; they do not grade the student's text.
-const RESULT_EXAMPLES={
- '01':['lepsze rozumienie procedury, jeśli jest celem pomocy','szersze zaangażowanie mieszkańców w sprawy lokalne'],
- '02':['zapewnienie zakładanej dostępności procedury','zmiany zaufania do miasta lub nierówności uczestnictwa'],
- '03':['poczucie wpływu głosujących, jeśli jest celem informowania','współpraca sąsiedzka i zaufanie do miasta'],
- '04':['osiągnięcie zadeklarowanego celu reguły podziału','zmiany relacji między grupami mieszkańców i zaufania do BO'],
- '05':['dotarcie ze zrozumiałą informacją do uprawnionych seniorów','szersze zmiany samodzielności seniorów, wymagające badania wykraczającego poza nabór'],
- '06':['prawidłowe wyjaśnianie wykrytych możliwych naruszeń','znaczące zmiany warunków środowiskowych i zdrowia mieszkańców'],
- '07':['osiągnięcie ustalonego celu wsparcia konkretnej rodziny','szersze zmiany relacji i warunków życia w lokalnej społeczności'],
- '08':['zastosowanie odmowy w nowej sytuacji, jeśli jest celem wybranych zajęć','szersze zmiany dobrostanu i zdrowia młodzieży'],
- '09':['osiągnięcie zakładanej poprawy spokoju nocnego','szersze zmiany jakości życia mieszkańców i funkcjonowania okolicy']
-};
+// Brief self-checks explain distinctions without supplying a case-specific answer.
 function criterionPrompt(key){
  const prompts={
-  skutecznosc:'Który bezpośredni cel oceniasz i dlaczego jego osiągnięcie jest ważne dla decyzji?',
+  skutecznosc:'Który zamierzony cel oceniasz i dlaczego jest ważny dla decyzji?',
   wplyw:'Jaką znaczącą, szerszą zmianę oceniasz i dlaczego jest ważna dla decyzji?',
   trafnosc:'Do czyich potrzeb lub warunków ma pasować działanie i dlaczego jest to ważne dla decyzji?',
   trwalosc:'Które korzyści mają się utrzymać i dlaczego ich utrzymanie jest ważne dla decyzji?',
@@ -140,33 +129,32 @@ function criterionPrompt(key){
  };
  return prompts[key]||'Powiąż ocenianą właściwość z decyzją użytkownika.';
 }
-function criterionCoaching(c,key,entry){
+function criterionCoaching(key,entry){
  if(key==='skutecznosc'||key==='wplyw'){
-  const ex=RESULT_EXAMPLES[c.id];
-  return 'Skuteczność: osiągnięcie zamierzonych celów. Wpływ: znaczące, szersze skutki, także zamierzone. Przykład warunkowy: '+ex[0]+' — skuteczność; '+ex[1]+' — wpływ. Samo słowo „wpływ” ani dotarcie informacji nie rozstrzyga o kryterium.';
+  return 'Skuteczność: osiągnięcie zamierzonych celów. Wpływ: znaczące, szersze skutki programu — zamierzone lub niezamierzone. Samo słowo „wpływ” w opisie celu nie rozstrzyga o kryterium.';
  }
- if(key==='trwalosc')return 'Sprawdź utrzymanie korzyści po początkowej zmianie. Pierwszy dobry wynik ani dalsze istnienie programu nie wystarczą. '+entry.question;
- if(key==='trafnosc')return 'Trafność dotyczy dopasowania do potrzeb i sytuacji odbiorców. Skuteczność dotyczy osiągnięcia założonego celu. '+entry.question;
- if(key==='inne')return 'Dobierz kryterium do decyzji i jasno zdefiniuj ocenianą właściwość. Nie musisz stosować wszystkich sześciu kryteriów OECD; ich komplet sam nie zapewnia porównywalności.';
- return entry?entry.note:'Dobierz kryterium do decyzji i uzasadnij wybór. Nie musisz stosować wszystkich sześciu kryteriów OECD.';
+ if(key==='trwalosc')return 'Trwałość: utrzymywanie się korzyści. Pierwszy dobry wynik lub samo dalsze istnienie programu jeszcze tego nie potwierdzają.';
+ if(key==='trafnosc')return 'Trafność: dopasowanie do potrzeb i warunków odbiorców. Skuteczność: osiągnięcie zamierzonych celów.';
+ if(key==='inne')return 'Nazwij ocenianą właściwość. Dobór kryteriów wynika z decyzji; stosowanie wszystkich sześciu samo nie zapewnia porównywalności.';
+ return entry?entry.note:'Wybierz kryterium przydatne do Twojej decyzji.';
 }
 function measureCheck(key){
  const checks={
-  skutecznosc:'Czy miara pokazuje osiągnięcie założonego celu? Sam zasięg informacji, liczba działań lub satysfakcja odbiorców mogą nie wystarczyć.',
-  wplyw:'Czy miara opisuje znaczącą, szerszą zmianę? Sam zasięg komunikatu lub osiągnięcie bezpośredniego celu jej nie potwierdza. Wkład programu wymaga sprawdzenia.',
-  trafnosc:'Czy obserwacja pokazuje dopasowanie do potrzeb odbiorców? Sama liczba uczestników nie wyjaśnia, czy sposób działania odpowiada ich sytuacji.',
-  trwalosc:'Czy obserwujesz utrzymanie korzyści w odpowiednim okresie? Wynik z pierwszego miesiąca opisuje początkową zmianę, a nie jej trwałość.'
+  skutecznosc:'Czy miara pokazuje osiągnięcie wybranego celu? Samo dotarcie informacji nie potwierdza zmiany, którą informowanie miało wywołać.',
+  wplyw:'Czy miara pokazuje znaczące, szersze skutki? Sam zasięg informacji ich nie potwierdza. Wkład programu wymaga sprawdzenia.',
+  trafnosc:'Czy miara pokazuje dopasowanie do potrzeb odbiorców? Sama liczba uczestników tego nie wyjaśnia.',
+  trwalosc:'Czy miara pokazuje utrzymanie korzyści? Wynik z pierwszego miesiąca nie wystarczy do oceny trwałości.'
  };
- return checks[key]||'Czy ta obserwacja pozwoli ocenić właśnie tę właściwość? Jeśli pokazuje inną, doprecyzuj miarę lub uzasadnienie kryterium.';
+ return checks[key]||'Czy ta obserwacja pozwoli ocenić wybraną właściwość? Jeśli nie, doprecyzuj miarę lub uzasadnienie kryterium.';
 }
 function feedbackContent(){
  const a=record.answers,s=record.step;
  const entry=active.glossary.entries.find(function(e){return e.key===a.criterion;});
- if(s===2)return quote('Twój wybór',criterionName(a))+quote('Twoje wyjaśnienie',a.criterionMeaning)+'<p><strong>Sprawdź:</strong> '+esc(criterionPrompt(a.criterion))+'</p><p class="hint">'+esc(criterionCoaching(active,a.criterion,entry))+'</p>';
- if(s===3)return quote('Twoje kryterium',criterionName(a)+' — '+(a.criterionMeaning||''))+quote('Twoja miara lub oznaka',a.measure)+'<p><strong>Sprawdź:</strong> '+esc(measureCheck(a.criterion))+'</p>'+quote('Twoje odniesienie',a.reference)+quote('Twoje uzasadnienie odniesienia',a.referenceBasis)+'<p><strong>Następny krok:</strong> wskaż źródło lub sposób uzasadnienia tej reguły. Jeśli go brakuje, nazwij potrzebne ustalenie w ostatnim polu.</p>';
+ if(s===2)return quote('Twój wybór',criterionName(a))+quote('Twoje wyjaśnienie',a.criterionMeaning)+'<p class="hint">'+esc(criterionCoaching(a.criterion,entry))+'</p>';
+ if(s===3)return quote('Twoje kryterium',criterionName(a)+' — '+(a.criterionMeaning||''))+quote('Twoja miara lub oznaka',a.measure)+'<p><strong>Sprawdź:</strong> '+esc(measureCheck(a.criterion))+'</p>'+quote('Twoje odniesienie',a.reference)+quote('Twoje uzasadnienie odniesienia',a.referenceBasis)+'<p><strong>Sprawdź też:</strong> czy uzasadnienie wskazuje źródło reguły lub konkretny brak do wyjaśnienia?</p>';
  return '<p>Zestaw odpowiedź z aktualnymi ustaleniami obok.</p>';
 }
-function feedbackBox(){return '<details id="feedbackPanel" class="feedback-panel"><summary>Sprawdź spójność własnych zapisów</summary><div id="feedbackBody">'+feedbackContent()+'</div><p class="muted">To pytania do sprawdzenia Twojego tekstu. Wykorzystaj je do poprawy projektu.</p></details>';}
+function feedbackBox(){return '<details id="feedbackPanel" class="feedback-panel"><summary>Sprawdź spójność własnych zapisów</summary><div id="feedbackBody">'+feedbackContent()+'</div></details>';}
 const REVISION_KEYS=['question','criterion','customCriterion','criterionMeaning','measure','reference','referenceBasis','unknown'];
 const REVISION_LABELS={question:'pytanie',criterion:'kryterium',customCriterion:'nazwa kryterium',criterionMeaning:'znaczenie kryterium',measure:'miara',reference:'odniesienie',referenceBasis:'uzasadnienie odniesienia',unknown:'sprawa do ustalenia'};
 function changedFields(){
