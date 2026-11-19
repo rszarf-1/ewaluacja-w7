@@ -12,7 +12,7 @@ Wydanie z 16 listopada 2026: usunięto etap pracy w parach i jego rubryki w rapo
 
 Sprawdzono dziewięć pełnych ścieżek, 36 dopytań, siedem opcji kryterium, eksport i import, wcześniejsze zapisy oraz układ mobilny. Testy techniczne nie stanowią pomiaru czasu ani efektów uczenia się w grupie studentów.
 
-Aktualizacja z 19 listopada 2026: informacja zwrotna uwzględnia rozróżnienie skuteczności i wpływu oraz trudności z trafnością, trwałością i doborem kryteriów. Przykłady skuteczności i wpływu dostosowano do dziewięciu programów. Podpowiedzi zmieniają się wraz z wybranym kryterium. Nadal obowiązuje pięć etapów i siedem krótkich odpowiedzi; nie dodano zadania ani obowiązkowej lektury. Sprawdzono warianty informacji zwrotnej, zgodność zapisów i raportów oraz przejście w przeglądarce.
+Aktualizacja z 19 listopada 2026: informacja zwrotna uwzględnia rozróżnienie skuteczności i wpływu oraz trudności z trafnością, trwałością i doborem kryteriów. Po przeglądzie obciążenia czytaniem skrócono objaśnienia i usunięto powtórzenia. Opcjonalna informacja zwrotna wyjaśnia różnice między kryteriami, bez podawania gotowego pytania ani rozstrzygnięcia dla programu. Pełne przykłady pozostają w słowniczku otwieranym na życzenie. Nadal obowiązuje pięć etapów i siedem krótkich odpowiedzi; nie dodano zadania ani obowiązkowej lektury. Sprawdzono warianty informacji zwrotnej oraz zgodność zapisów i raportów. To przegląd projektu, nie pomiar obciążenia poznawczego u studentów.
 
 Podstawa: [OECD (2021), Applying Evaluation Criteria Thoughtfully](https://www.oecd.org/content/dam/oecd/en/publications/reports/2021/03/applying-evaluation-criteria-thoughtfully_45a54ea7/543e84ed-en.pdf). Scenki i przykłady mają charakter dydaktyczny, hipotetyczny.
 
